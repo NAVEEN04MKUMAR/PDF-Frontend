@@ -70,7 +70,7 @@ const AnnotationForm=()=>{
 
       try{
         console.log("Sending files to backend...");
-          const res=await axios.post('http://localhost:5002/api/annotation-text-pdf/',formdata,{
+          const res=await axios.post('https://pdf-backend-1-xl70.onrender.com/api/annotation-text-pdf/',formdata,{
               headers:{
                  'Content-Type':'multipart/form-data',
               }
