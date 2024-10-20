@@ -46,7 +46,7 @@ const Mergepdf=()=>{
       }
 
         try{
-            const res=await axios.post('https://pdf-backend-1-xl70.onrender.com/api/merge-pdf/',formdata,{
+            const res=await axios.post('http://localhost:5002/api/merge-pdf/',formdata,{
                 headers:{
                    'Content-Type':'multipart/formdata',
                 }

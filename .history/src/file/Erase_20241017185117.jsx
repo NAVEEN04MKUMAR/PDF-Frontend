@@ -1,3 +1,5 @@
+
+
 import React,{useState} from "react";
 import axios from "axios";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -24,39 +26,52 @@ function base64ToBlob(base64, contentType = '', sliceSize = 512) {
 
 
 
-
-const Mergepdf=()=>{
+const Erase=()=>{
     const [selectedfiles,setselectedfiles]=useState(null);
-    const [mergedfileurl,setmergedfileurl]=useState(null);
+    const [message,setmessage]=useState('');
+    const [eraseFilePath,seteraseFilePath]=useState('');
 
+    eraseFilePath
 
     const handlefilechange=(e)=>{
         setselectedfiles(e.target.files);
         console.log(e.target.files);
     }
+   
 
-    const handlesubmit=async(e)=>{
-        e.preventDefault();
-        const formdata=new FormData();
-        if(selectedfiles){   
-        for(let i=0;i<selectedfiles.length;i++){
-            formdata.append('pdf',selectedfiles[i]);
-            console.log('submitted file',selectedfiles[i]);    
-        }
-      }
+    const handleeraseannotation=async(e)=>{
+        e.preventDefault(); 
+     if(!selectedfiles){
+        setmessage('please select file')
+        return;
+     }
+   
+      const formdata=new FormData();
+      if(selectedfiles){   
+      for(let i=0;i<selectedfiles.length;i++){
+          formdata.append('file',selectedfiles[i]);
+          console.log('submitted file',selectedfiles[i]);    
+      }   
+    }
 
-        try{
-            const res=await axios.post('https://pdf-backend-1-xl70.onrender.com/api/merge-pdf/',formdata,{
-                headers:{
-                   'Content-Type':'multipart/formdata',
-                }
-            });
-           const {  mergedpdfurl } = res.data;
-           console.log("Encrypted PDF (base64):", mergedpdfurl);
-           setmergedfileurl(res.data.mergedpdfurl);
+
+
+      try{
+        console.log("Sending files to backend...");
+          const res=await axios.post('http://localhost:5002/api/erase-pdf/',formdata,{
+              headers:{
+                 'Content-Type':'multipart/form-data',
+              }
+          });
+          console.log('annotation response',res.data)
+
+           // Access the Base64 string from the response
+           const {  eraseFilePath} = res.data;
+           console.log("Encrypted PDF (base64):", eraseFilePath);
+          seteraseFilePath(res.data.eraseFilePath);
         //   console.log('annotationtext file url',res.data.annotationerasefilepath);
           
-          const base64Encrypted= res.data.mergedpdfurl;
+          const base64Encrypted= res.data.eraseFilePath;
                     console.log("base64Encrypted", base64Encrypted);
 
 
@@ -72,7 +87,7 @@ const storage = getStorage();
 console.log('successfully get the storage',storage);
 
 // Create a reference to Firebase Storage
-const storageRef = ref(storage, `pdfs/merge-${Date.now()}.pdf`);
+const storageRef = ref(storage, `pdfs/erase-${Date.now()}.pdf`);
 console.log('path',storageRef);
 // Upload the Blob to Firebase Storage
 const uploadTask = uploadBytesResumable(storageRef, pdfBlob);
@@ -120,41 +135,44 @@ console.log("Fetching encrypted file for decryption...");
 
 const downloadURL = await getDownloadURL(storageRef);  // Use the original storageRef directly
     console.log('Encrypted file download URL:', downloadURL);
+      }catch(error){
+          console.log('error annotationhighlight file',error);
+      }
+      
+  }
 
-
-        }catch{
-            console.log('error merging file',error);
-        }
-
-    }
+   
 
     return (
         <div>
-        <h1>Mergepdf</h1>
-       
-            <form onSubmit={handlesubmit}>
-<input type="file" name="file" multiple onChange={handlefilechange} accept="application/pdf"/>
-<button type="submit">Merge pdf</button>
+        <h1>annotation-highlight-PDF</h1>
+            <form onSubmit={handleeraseannotation}>
+<input type="file" name="file"  onChange={handlefilechange} accept="application/pdf"/>
+<button type="button"  onClick={handleeraseannotation} >Annotationdata</button>
             </form>
 
 
-{mergedfileurl&&(
-    <div>
-         {console.log('Rendering mergedfileurl:', mergedfileurl)} 
-        <p>Merged pdf available for download</p>
-        <a href={mergedfileurl} download="merged.pdf">Download merged pdf</a>
-     </div>
-)};
-
-
-
-
-
-
+{/* 
+<h4>Annotation items:</h4>
+<ul>
+    {
+        redactionitems.map((item,index)=>(
+            <li key={index}>{item}</li>
+        ))
+    }
+</ul> */}
+{eraseFilePath && (
+        <div>
+        {console.log("Decrypted File URL:", eraseFilePath)}
+          <h2>Erased File Available At:</h2>
+          <a href={eraseFilePath} target="_blank" rel="noopener noreferrer">Download Erased File</a>
         </div>
+      )}
+            {message && <p>{message}</p>}
+    </div>
     );
 };
 
 
 
-export default Mergepdf;
+export default Erase;

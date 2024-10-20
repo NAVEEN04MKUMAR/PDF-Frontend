@@ -61,7 +61,7 @@ const Rewrite=()=>{
 
     try{
         console.log("Sending files to backend...");
-          const res=await axios.post('https://pdf-backend-1-xl70.onrender.com/api/rewrite-pdf/',formdata,{
+          const res=await axios.post('http://localhost:5002/api/rewrite-pdf/',formdata,{
               headers:{
                  'Content-Type':'multipart/form-data',
               }

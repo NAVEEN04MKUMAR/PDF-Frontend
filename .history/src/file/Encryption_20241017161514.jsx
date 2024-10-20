@@ -54,7 +54,7 @@ const [DecryptedFileUrl,setDecryptedFileUrl]=useState(null);
 
       try{
         console.log("Sending files to backend...");
-          const res=await axios.post('https://pdf-backend-1-xl70.onrender.com/api/encrypt-pdf/',formdata,{
+          const res=await axios.post('http://localhost:5002/api/encrypt-pdf/',formdata,{
               headers:{
                  'Content-Type':'multipart/form-data',
               }

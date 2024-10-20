@@ -49,7 +49,7 @@ const Split=()=>{
       }
 
         try{
-            const res=await axios.post('https://pdf-backend-1-xl70.onrender.com/api/splitpdf/',formdata,{
+            const res=await axios.post('http://localhost:5002/api/splitpdf/',formdata,{
                 headers:{
                    'Content-Type':'multipart/formdata',
                 }
