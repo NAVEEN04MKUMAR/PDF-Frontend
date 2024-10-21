@@ -2,6 +2,7 @@
 
 import React,{useState} from "react";
 import axios from "axios";
+
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 
@@ -25,12 +26,12 @@ function base64ToBlob(base64, contentType = '', sliceSize = 512) {
   }
 
 
-
-const Rewrite=()=>{
+const AnnotationForm=()=>{
     const [selectedfiles,setselectedfiles]=useState(null);
     const [message,setmessage]=useState('');
     const [annotationtext,setannotationtext]=useState('');
-    const [reorderedfileurl,setreorderedfileurl]=useState(null);
+    const [annotationcontent,setannotationcontent]=useState('');
+    const [reorderedfileurl,setreorderedfileurl]=useState('');
 
 
 
@@ -43,7 +44,12 @@ const Rewrite=()=>{
         console.log(e.target.value);
     }
 
-    const handlerewriteannotation=async(e)=>{
+    const handleannotationcontent=(e)=>{       
+       setannotationcontent(e.target.value);
+       console.log(e.target.value);
+    }
+
+    const handletextannotation=async(e)=>{
         e.preventDefault(); 
      if(!selectedfiles){
         setmessage('please select file')
@@ -58,30 +64,31 @@ const Rewrite=()=>{
       }   
     }
     formdata.append('annotationtext',annotationtext);
+    formdata.append('annotationcontent',annotationcontent);
 
-    try{
+
+
+      try{
         console.log("Sending files to backend...");
-        const apiUrl = import.meta.env.VITE_BACKEND_URL;
- 
-        const res=await axios.post(`${apiUrl}/api/rewrite-pdf/`,formdata,{
+          const res=await axios.post('https://pdf-backend-1-xl70.onrender.com/api/annotation-text-pdf/',formdata,{
               headers:{
                  'Content-Type':'multipart/form-data',
               }
           });
           console.log('annotation response',res.data)
-        //   setmessage(res.data.annotationrewritefilepath);
-        //   console.log('annotationtext file url',res.data.annotationrewritefilepath);
+          setmessage(res.data. cloudinary_url);
 
-          const { rewriteFilePath } = res.data;
-          console.log("Encrypted PDF (base64):",  rewriteFilePath);
-          setreorderedfileurl(res.data. rewriteFilePath);
-         console.log('annotationtext file url',res.data.rewriteFilePath);
+          
+          const { base64Decrypted  } = res.data;
+          console.log("Encrypted PDF (base64):", base64Decrypted );
+          setreorderedfileurl(res.data. base64Decrypted );
+         console.log('annotationtext file url',res.data.base64Decrypted );
          
-         const base64Encrypted= res.data.rewriteFilePath;
-         console.log("base64Encrypted", base64Encrypted);
+         const base64Encryptedf= res.data.base64Decrypted ;
+         console.log("base64Encrypted", base64Encryptedf);
 
 
-const pdfBlob = base64ToBlob(base64Encrypted, 'application/pdf');
+const pdfBlob = base64ToBlob(base64Encryptedf, 'application/pdf');
 console.log("pdfBlob", pdfBlob);
 
 // Initialize Firebase Storage
@@ -89,7 +96,7 @@ const storage = getStorage();
 console.log('successfully get the storage',storage);
 
 // Create a reference to Firebase Storage
-const storageRef = ref(storage, `pdfs/rewriting-${Date.now()}.pdf`);
+const storageRef = ref(storage, `pdfs/annotationtext-${Date.now()}.pdf`);
 console.log('path',storageRef);
 // Upload the Blob to Firebase Storage
 const uploadTask = uploadBytesResumable(storageRef, pdfBlob);
@@ -135,11 +142,11 @@ uploadTask.on('state_changed',
 // console.log("Fetching encrypted file for decryption...");
  
 const downloadURL = await getDownloadURL(storageRef);  // Use the original storageRef directly
-console.log('reodering download URL:', downloadURL);
+console.log('annotationtext download URL:', downloadURL);
 
-
+        
       }catch(error){
-          console.log('error annotation rewrite file',error);
+          console.log('error annotationtext file',error);
       }
       
   }
@@ -148,24 +155,23 @@ console.log('reodering download URL:', downloadURL);
 
     return (
         <div>
-        <h1>annotation-rewrite-PDF</h1>
-            <form onSubmit={handlerewriteannotation}>
+        <h1>annotationtext PDF</h1>
+            <form onSubmit={handletextannotation}>
 <input type="file" name="file"  onChange={handlefilechange} accept="application/pdf"/>
 <input type="text" placeholder="text to annotate" value={annotationtext} onChange={handleannotationtext}/>
+<input type="text" placeholder="Annotation content" value={annotationcontent} onChange={handleannotationcontent}/>
 
-<button type="button"  onClick={handlerewriteannotation} >Annotationdata</button>
+<button type="button"  onClick={handletextannotation} >Annotationdata</button>
             </form>
 
 
-{/* 
-<h4>Annotation items:</h4>
-<ul>
-    {
-        redactionitems.map((item,index)=>(
-            <li key={index}>{item}</li>
-        ))
-    }
-</ul> */}
+            {reorderedfileurl&&(
+    <div>
+         {console.log('Rendering reorderedfileurl:',reorderedfileurl)} 
+        <p>Annotated pdf available for download</p>
+        <a href={reorderedfileurl} download="merged.pdf">Download Annotated pdf</a>
+     </div>
+            )};
             {message && <p>{message}</p>}
     </div>
     );
@@ -173,4 +179,4 @@ console.log('reodering download URL:', downloadURL);
 
 
 
-export default Rewrite;
+export default AnnotationForm;

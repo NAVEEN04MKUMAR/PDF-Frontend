@@ -63,7 +63,7 @@ const Rewrite=()=>{
         console.log("Sending files to backend...");
         const apiUrl = import.meta.env.VITE_BACKEND_URL;
  
-        const res=await axios.post(`${apiUrl}/api/rewrite-pdf/`,formdata,{
+        const res=await axios.post(${apiUrl}/api/rewrite-pdf/`,formdata,{
               headers:{
                  'Content-Type':'multipart/form-data',
               }

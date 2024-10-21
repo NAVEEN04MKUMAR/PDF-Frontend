@@ -1,6 +1,7 @@
 import React,{useState} from "react";
 import axios from "axios";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import app from '../firebase.jsx'
 
 
 function base64ToBlob(base64, contentType = '', sliceSize = 512) {
@@ -24,45 +25,53 @@ function base64ToBlob(base64, contentType = '', sliceSize = 512) {
 
 
 
-
-const Mergepdf=()=>{
+const Convert=()=>{
+    // const [selectedfiles,setselectedfiles]=useState(null);
     const [selectedfiles,setselectedfiles]=useState(null);
-    const [mergedfileurl,setmergedfileurl]=useState(null);
-
+    const [loading,setloading]=useState(false);
+    const [result,setresult]=useState(null);
+const[base64Decrypted ,setbase64Decrypted]=useState(null);
 
     const handlefilechange=(e)=>{
         setselectedfiles(e.target.files);
         console.log(e.target.files);
     }
 
-    const handlesubmit=async(e)=>{
-        e.preventDefault();
-        const formdata=new FormData();
-        if(selectedfiles){   
-        for(let i=0;i<selectedfiles.length;i++){
-            formdata.append('pdf',selectedfiles[i]);
-            console.log('submitted file',selectedfiles[i]);    
-        }
+
+    const handleconvert=async(e)=>{
+      e.preventDefault();
+      setloading(true);
+      const formdata=new FormData();
+      if(selectedfiles){   
+      for(let i=0;i<selectedfiles.length;i++){
+          formdata.append('file',selectedfiles[i]);
+          console.log('submitted file',selectedfiles[i]);    
       }
+    }
 
-        try{
-          const apiUrl = import.meta.env.VITE_BACKEND_URL;
+      try{
+        console.log("Sending files to backend...");
+          const res=await axios.post(`${apiUrl}/api/converttodocx/`,formdata,{
+              headers:{
+                 'Content-Type':'multipart/form-data',
+              }
+          });
+          console.log('conerting response',res.data)
+          setresult(res.data);
+          console.log('uploading file',res.data);
 
-            const res=await axios.post(`${apiUrl}/api/merge-pdf/`,formdata,{
-                headers:{
-                   'Content-Type':'multipart/formdata',
-                }
-            });
-           const {  mergedpdfurl } = res.data;
-           console.log("Encrypted PDF (base64):", mergedpdfurl);
-           setmergedfileurl(res.data.mergedpdfurl);
-        //   console.log('annotationtext file url',res.data.annotationerasefilepath);
           
-          const base64Encrypted= res.data.mergedpdfurl;
-                    console.log("base64Encrypted", base64Encrypted);
+          // Access the Base64 string from the response
+          const {    base64Decrypted } = res.data;
+          
+          // Store or use these values as needed
+          setbase64Decrypted(   base64Decrypted);
+
+          const base64Encryptedf= res.data.base64Decrypted;
+          console.log("base64Encrypted", base64Encryptedf);
 
 
-const pdfBlob = base64ToBlob(base64Encrypted, 'application/pdf');
+const pdfBlob = base64ToBlob(base64Encryptedf, 'application/pdf');
 console.log("pdfBlob", pdfBlob);
 
 
@@ -74,7 +83,9 @@ const storage = getStorage();
 console.log('successfully get the storage',storage);
 
 // Create a reference to Firebase Storage
-const storageRef = ref(storage, `pdfs/merge-${Date.now()}.pdf`);
+const storageRef = ref(storage, `pdfs/converttodocx-${Date.now()}.docx
+
+`);
 console.log('path',storageRef);
 // Upload the Blob to Firebase Storage
 const uploadTask = uploadBytesResumable(storageRef, pdfBlob);
@@ -116,47 +127,44 @@ uploadTask.on('state_changed',
     });
   }
 );
+      }catch(error){
+          console.log('error uploading file',error);
+      }
+      finally {
+        setloading(false);
+      }
 
-console.log("Fetching encrypted file for decryption...");
-  
+  }
 
-const downloadURL = await getDownloadURL(storageRef);  // Use the original storageRef directly
-    console.log('Encrypted file download URL:', downloadURL);
-
-
-        }catch{
-            console.log('error merging file',error);
-        }
-
-    }
+   
 
     return (
         <div>
-        <h1>Mergepdf</h1>
-       
-            <form onSubmit={handlesubmit}>
-<input type="file" name="file" multiple onChange={handlefilechange} accept="application/pdf"/>
-<button type="submit">Merge pdf</button>
+        <h1>Convert PDF</h1>
+            <form onSubmit={handleconvert}>
+<input type="file" name="file"  onChange={handlefilechange} accept="application/pdf"/>
+<button type="submit">{loading?'converting':'convert pdf'}</button>
             </form>
 
 
-{mergedfileurl&&(
+{result&&(
     <div>
-         {console.log('Rendering mergedfileurl:', mergedfileurl)} 
-        <p>Merged pdf available for download</p>
-        <a href={mergedfileurl} download="merged.pdf">Download merged pdf</a>
-     </div>
-)};
-
-
-
-
-
-
-        </div>
+    <h3>Convert file</h3>   
+    <p>DOCX file:
+        <a href={`/${result.docx}`} download={`converted_file.docx`}>Download</a></p>
+    <ul>
+        {result.images.map((image,index)=>(
+            <li key={index}>
+                <a href={`/${image}`} download={`image_page_${index+1}.png`}> Download page {image+1} image</a>
+            </li>
+        ))}
+    </ul>
+    </div>
+)}
+    </div>
     );
 };
 
 
 
-export default Mergepdf;
+export default Convert;

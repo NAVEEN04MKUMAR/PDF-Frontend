@@ -71,9 +71,7 @@ const Redaction=()=>{
 
       try{
         console.log("Sending files to backend...");
-        const apiUrl = import.meta.env.VITE_BACKEND_URL;
- 
-        const res=await axios.post(`${apiUrl}/api/redaction-pdf/`,formdata,{
+          const res=await axios.post('https://pdf-backend-1-xl70.onrender.com/api/redaction-pdf/',formdata,{
             // https://pdf-backend-1-xl70.onrender.com
               headers:{
                  'Content-Type':'multipart/form-data',

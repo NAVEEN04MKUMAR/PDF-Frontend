@@ -26,48 +26,38 @@ function base64ToBlob(base64, contentType = '', sliceSize = 512) {
 
 
 
-const Reorder=()=>{
-    // const [selectedfiles,setselectedfiles]=useState(null);
-    const [selectedfiles,setselectedfiles]=useState(null);
-    const [order,setorder]=useState([]);
-    // const [uploadfile,setuploadfile]=useState('');
-    const [message,setmessage]=useState('');
-   const [reorderedfileurl,setreorderedfileurl]=useState(null);
 
+const Split=()=>{
+    const [selectedfiles,setselectedfiles]=useState(null);
+    const [splitedfile,setsplitedfile]=useState([]);
+    const [reorderedfileurl,setreorderedfileurl]=useState(null);
+    const [reorderedfileurls,setreorderedfileurls]=useState(null);
 
     const handlefilechange=(e)=>{
         setselectedfiles(e.target.files);
         console.log(e.target.files);
     }
 
-
-
-
-//   }
-
-    const handlereorder=async(e)=>{
+    const handlesubmit=async(e)=>{
         e.preventDefault();
-              const formdata=new FormData();
-              if(selectedfiles){   
-              for(let i=0;i<selectedfiles.length;i++){
-                  formdata.append('file',selectedfiles[i]);
-                  console.log('submitted file',selectedfiles[i]);    
-              }
-              formdata.append('order', JSON.stringify(order));
-        try{
-            console.log('Sending reorder request with filename:', order);
-            const apiUrl = import.meta.env.VITE_BACKEND_URL;
+        const formdata=new FormData();
+        if(selectedfiles){   
+        for(let i=0;i<selectedfiles.length;i++){
+            formdata.append('file',selectedfiles[i]);
+            console.log('submitted file',selectedfiles[i]);    
+        }
+      }
 
-            const res=await axios.post(`${apiUrl}/api/reorder-pdf/`,formdata,{
-                headers: {
-                    'Content-Type': 'multipart/form-data', // Required for file uploads
-                },
+        try{
+            const apiUrl = import.meta.env.VITE_BACKEND_URL;
+            const res=await axios.post(`{apiUrl }/api/splitpdf/`,formdata,{
+                headers:{
+                   'Content-Type':'multipart/formdata',
+                }
             });
-            console.log('reordering file',res.data);
-            setmessage(res.data.base64Decrypted);
-            console.log('redacted file url',res.data. base64Decrypted);
-           
-            const {  base64Decrypted } = res.data;
+            setsplitedfile(res.data.base64Decrypted);
+            console.log('uploading file',res.data.base64Decrypted);
+            const {base64Decrypted } = res.data;
             console.log("Encrypted PDF (base64):",  base64Decrypted);
             setreorderedfileurl(res.data. base64Decrypted);
            console.log('annotationtext file url',res.data.base64Decrypted);
@@ -75,16 +65,22 @@ const Reorder=()=>{
            const base64Encrypted= res.data.base64Decrypted;
            console.log("base64Encrypted", base64Encrypted);
   
-  
-  const pdfBlob = base64ToBlob(base64Encrypted, 'application/pdf');
-  console.log("pdfBlob", pdfBlob);
+ 
   
   // Initialize Firebase Storage
   const storage = getStorage();
   console.log('successfully get the storage',storage);
-  
-  // Create a reference to Firebase Storage
-  const storageRef = ref(storage, `pdfs/reodering-${Date.now()}.pdf`);
+
+  const uploadedUrls = [];
+            for (let i = 0; i < base64Encrypted.length; i++) {
+                const base64EncryptedF = base64Encrypted[i];
+                console.log(`Base64 File ${i}:`, base64Encrypted);
+
+                const pdfBlob = base64ToBlob(base64EncryptedF, 'application/pdf');
+                console.log("pdfBlob", pdfBlob);
+
+                // Create a reference to Firebase Storage
+  const storageRef = ref(storage, `pdfs/spliting-${i}-${Date.now()}.pdf`);
   console.log('path',storageRef);
   // Upload the Blob to Firebase Storage
   const uploadTask = uploadBytesResumable(storageRef, pdfBlob);
@@ -132,35 +128,41 @@ const Reorder=()=>{
   const downloadURL = await getDownloadURL(storageRef);  // Use the original storageRef directly
   console.log('reodering download URL:', downloadURL);
   
-  
-  
-  
-        }catch(error){
-            console.log('error reodering file',error);
+  uploadedUrls.push(downloadURL);
+                console.log(`File ${i} available at:`, downloadURL);
+
+setreorderedfileurls(uploadedUrls);
+        }
+        }
+        catch(error){
+            console.log('error merging file',error);
         }
 
     }
-    }
+
     return (
         <div>
-        <h1>Reorderpdf</h1>
+        <h1>Splitpdf</h1>
        
-            <div>
+            <form onSubmit={handlesubmit}>
 <input type="file" name="file"  onChange={handlefilechange} accept="application/pdf"/>
-<button type="submit">Reorder pdf</button>
-            </div>
+<button type="submit">Split pdf</button>
+            </form>
 
 <div>
-  <h2>Reorder PDF files</h2>
-
-  <input type="text" placeholder="enter page number comma-separated" onChange={(e)=>setorder(e.target.value.split(',').map(num => Number(num) - 1))}/>
-<button onClick={handlereorder}>Reorder PDF</button>
-
-     </div>
+  <h2>Split files</h2>
+  <ul>
+{splitedfile.map((file,index)=>(
+      <li key={index}>
+        <a href={`http://localhost:5002/download/${file}`} download>{file}</a>
+      </li>
+))};
+</ul>
+        </div>
         </div>
     );
 };
 
 
 
-export default Reorder;
+export default Split;
