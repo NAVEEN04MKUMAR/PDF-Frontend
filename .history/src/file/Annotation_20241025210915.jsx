@@ -181,13 +181,6 @@ console.log('annotationtext download URL:', downloadURL);
         <a href={reorderedfileurl} download="merged.pdf">Download Annotated pdf</a>
      </div>
             )};
-
-{downloadUrl && (
-                <div>
-                    <p>File is ready to download:</p>
-                    <button onClick={handleDownload}>Download Annotated PDF</button>
-                </div>
-            )}
             {message && <p>{message}</p>}
     </div>
     );

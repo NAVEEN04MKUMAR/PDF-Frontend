@@ -62,7 +62,7 @@ const Dashboard = () => {
             </ul>
 
             <ul>
-                {/* <li>
+                <li>
                     <Link to="/createrepo">
                         <button>Create repo</button>
                     </Link>
@@ -110,7 +110,7 @@ const Dashboard = () => {
                         <button>Delete branch</button>
                     </Link>
                 </li>
-            </ul> */}
+            </ul>
         </div>
     );
 };

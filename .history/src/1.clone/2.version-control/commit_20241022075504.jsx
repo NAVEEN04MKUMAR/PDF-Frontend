@@ -75,7 +75,7 @@ const Commit=()=>{
 
 useEffect(()=>{
     handlecommithistory();
-},[])
+})
 
 
 
@@ -91,11 +91,11 @@ useEffect(()=>{
         <h2>select branch</h2>
 <select value={selectedbranch} onChange={(e)=>setselectbranch(e.target.value)}>
   {
-    branches.map((branch,index)=>(
+    branches.map((branch,index)=>{
       <option key={index} value={branch}> 
       {branch}
       </option>
-    ))
+    })
   }
 </select>
 
@@ -108,7 +108,7 @@ useEffect(()=>{
 
 <h3>commit history</h3>
 <ul>
-     {Array.isArray(commithistory) && commithistory.length > 0 ? (
+    {
         commithistory.map((commit,index)=>(
             <li key={index}>
                 <strong>
@@ -118,9 +118,7 @@ useEffect(()=>{
                 <br/>
                 Timestamp:{new Date(commit.timestamp).toLocaleString()}
             </li>
-        ))):(
-          <li>No commit history available</li>
-        )}
+        ))}
 
 </ul>
 

@@ -75,7 +75,7 @@ const Commit=()=>{
 
 useEffect(()=>{
     handlecommithistory();
-},[])
+})
 
 
 
@@ -91,11 +91,11 @@ useEffect(()=>{
         <h2>select branch</h2>
 <select value={selectedbranch} onChange={(e)=>setselectbranch(e.target.value)}>
   {
-    branches.map((branch,index)=>(
+    branches.map((branch,index)=>{
       <option key={index} value={branch}> 
       {branch}
       </option>
-    ))
+    })
   }
 </select>
 
