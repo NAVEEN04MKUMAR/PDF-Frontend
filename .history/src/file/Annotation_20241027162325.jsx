@@ -71,8 +71,6 @@ const AnnotationForm=()=>{
       try{
         console.log("Sending files to backend...");
         const apiUrl = import.meta.env.VITE_BACKEND_URL;
-        // http://localhost:5002
-        // ${apiUrl}
           const res=await axios.post(`${apiUrl}/api/annotation-text-pdf/`,formdata,{
               headers:{
                  'Content-Type':'multipart/form-data',

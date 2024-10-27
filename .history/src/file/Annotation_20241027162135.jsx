@@ -71,8 +71,6 @@ const AnnotationForm=()=>{
       try{
         console.log("Sending files to backend...");
         const apiUrl = import.meta.env.VITE_BACKEND_URL;
-        // http://localhost:5002
-        // ${apiUrl}
           const res=await axios.post(`${apiUrl}/api/annotation-text-pdf/`,formdata,{
               headers:{
                  'Content-Type':'multipart/form-data',
@@ -186,7 +184,7 @@ console.log('annotationtext download URL:', downloadURL);
 {downloadUrl && (
                 <div>
                     <p>File is ready to download:</p>
-                    <a href={downloadUrl} download="merged.pdf">Download Annotated pdf</a>
+                    <a href={reorderedfileurl} download="merged.pdf">Download Annotated pdf</a>
 
                     <button onClick={handleDownload}>Download Annotated PDF</button>
                 </div>
