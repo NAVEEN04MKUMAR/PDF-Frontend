@@ -137,19 +137,18 @@ uploadTask.on('state_changed',
      }
  },
  () => {
- // Upload completed successfully, now get the download URL
- getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-  console.log('File available at:', downloadURL);
-  setDownloadUrl(downloadURL);  // Set the URL in state
-});
+   // Upload completed successfully
+   getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+     console.log('File available at:', downloadURL);
+   });
  }
 );
 
 // console.log("Fetching encrypted file for decryption...");
  
-// const downloadURL = await getDownloadURL(storageRef);  // Use the original storageRef directly
-// console.log('redactedfile download URL:', downloadURL);
-//     setDownloadUrl(downloadURL );
+const downloadURL = await getDownloadURL(storageRef);  // Use the original storageRef directly
+console.log('redactedfile download URL:', downloadURL);
+    setDownloadUrl(downloadURL );
 
 
    

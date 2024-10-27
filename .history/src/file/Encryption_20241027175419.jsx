@@ -281,13 +281,13 @@ const handleDownloadd = () => {
             {/* <form onSubmit={ handleDecrypt }>
 <button type="submit">Decrypt</button>
             </form> */}
-            {/* {DecryptedFileUrl && (
+            {DecryptedFileUrl && (
         <div>
         {console.log("Decrypted File URL:", DecryptedFileUrl)}
           <h2>Decrypted File Available At:</h2>
           <a href={DecryptedFileUrl} target="_blank" rel="noopener noreferrer">Download Decrypted File</a>
         </div>
-      )} */}
+      )}
       {/* {downloadUrl && (
                 <div>
                     <p>File is ready to download:</p>
@@ -300,8 +300,6 @@ const handleDownloadd = () => {
              {downloadUrlD && (
                 <div>
                     <p>File is ready to download:</p>
-                    <button onClick={handleDownload}>Download Annotated PDF</button>
-                    <a href={downloadUrl} download="encrypted.pdf">Download Annotated pdf</a>
                     <button onClick={handleDownloadd}>Download Annotated PDF</button>
                     <a href={downloadUrlD} download="decrypted.pdf">Download Annotated pdf</a>
 
