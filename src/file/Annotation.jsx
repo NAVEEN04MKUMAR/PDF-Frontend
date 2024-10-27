@@ -153,6 +153,7 @@ console.log('annotationtext download URL:', downloadURL);
       }
       
   }
+  const handleDownload = () => {
   if (downloadUrl) {
     const link = document.createElement('a');
     link.href = downloadUrl;
@@ -161,7 +162,7 @@ console.log('annotationtext download URL:', downloadURL);
     link.click();
     document.body.removeChild(link);
 }
-
+};
    
 
     return (
@@ -186,9 +187,9 @@ console.log('annotationtext download URL:', downloadURL);
 {downloadUrl && (
                 <div>
                     <p>File is ready to download:</p>
+                    <button onClick={handleDownload}>Download Annotated PDF</button>
                     <a href={downloadUrl} download="merged.pdf">Download Annotated pdf</a>
 
-                    <button onClick={handleDownload}>Download Annotated PDF</button>
                 </div>
             )}
             {message && <p>{message}</p>}
