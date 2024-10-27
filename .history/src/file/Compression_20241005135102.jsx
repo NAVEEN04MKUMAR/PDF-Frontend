@@ -26,8 +26,7 @@ const Compression=()=>{
 
       try{
         console.log("Sending files to backend...");
-         
-        const res=await axios.post('http://localhost:5002/compress-pdf/',formdata,{
+          const res=await axios.post('http://localhost:5002/compress-pdf/',formdata,{
               headers:{
                  'Content-Type':'multipart/form-data',
               }

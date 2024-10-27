@@ -151,7 +151,16 @@ console.log('redactedfile download URL:', downloadURL);
     setDownloadUrl(downloadURL );
 
 
-   
+    const handleDownload = () => {
+      if (downloadUrl) {
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.setAttribute('download', 'annotated.pdf');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+    };
     
 
 
@@ -162,16 +171,7 @@ console.log('redactedfile download URL:', downloadURL);
       }
       
   }
-  const handleDownload = () => {
-    if (downloadUrl) {
-      const link = document.createElement('a');
-      link.href = downloadUrl;
-      link.setAttribute('download', 'annotated.pdf');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-  }
-  };
+
    
 
     return (

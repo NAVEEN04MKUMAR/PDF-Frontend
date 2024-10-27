@@ -129,6 +129,7 @@ uploadTask.on('state_changed',
     // Upload completed successfully
     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
       console.log('File available at:', downloadURL);
+      setDownloadUrl(downloadURL );
 
     });
   }
@@ -139,8 +140,6 @@ console.log("Fetching encrypted file for decryption...");
 
 const downloadURL = await getDownloadURL(storageRef);  // Use the original storageRef directly
     console.log('Encrypted file download URL:', downloadURL);
-    setDownloadUrl(downloadURL );
-
       }catch(error){
           console.log('error annotationhighlight file',error);
       }
@@ -187,18 +186,6 @@ const downloadURL = await getDownloadURL(storageRef);  // Use the original stora
           <a href={eraseFilePath} target="_blank" rel="noopener noreferrer">Download Erased File</a>
         </div>
       )}
-
-{downloadUrl && (
-                <div>
-                    <p>File is ready to download:</p>
-                    <button onClick={handleDownload}>Download Annotated PDF</button>
-                    <a href={downloadUrl} download="merged.pdf">Download Annotated pdf</a>
-
-                </div>
-            )}
-
-
-
             {message && <p>{message}</p>}
     </div>
     );

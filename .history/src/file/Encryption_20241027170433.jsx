@@ -215,20 +215,12 @@ uploadTask.on('state_changed',
     // Upload completed successfully
     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
       console.log('File available at:', downloadURL);
+      setDownloadUrl(downloadURL );
 
     });
   }
-
 );
-
-
-
-    
-    const downloadURL = await getDownloadURL(storageRefd);  // Use the original storageRef directly
-    console.log('Encrypted file download URL:', downloadURL);
-    setDownloadUrl(downloadURL );
-}
-  
+    }
 const handleDownload = () => {
   if (downloadUrl) {
     const link = document.createElement('a');
