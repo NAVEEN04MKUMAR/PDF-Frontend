@@ -186,8 +186,8 @@ console.log('downloadURL', setDownloadUrl);
                 <div>
                     <p>File is ready to download:</p>
                     {console.log("Download URL:", downloadUrl)} 
-                    <button onClick={()=>{ console.log("Download button clicked");handleDownload}}>Download Rewrite PDF</button>
-                    <a href={downloadUrl} download="rewrite.pdf">Download Rewrite pdf</a>
+                    <button onClick={()=>{ console.log("Download button clicked");handleDownload}}>Download Annotated PDF</button>
+                    <a href={downloadUrl} download="rewrite.pdf">Download Annotated pdf</a>
 
                 </div>
             )}

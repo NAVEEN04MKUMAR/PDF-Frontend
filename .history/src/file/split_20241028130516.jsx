@@ -32,8 +32,6 @@ const Split=()=>{
     const [splitedfile,setsplitedfile]=useState([]);
     const [reorderedfileurl,setreorderedfileurl]=useState(null);
     const [reorderedfileurls,setreorderedfileurls]=useState(null);
-    const [downloadUrl, setDownloadUrl] = useState('');
-
 
     const handlefilechange=(e)=>{
         setselectedfiles(e.target.files);
@@ -121,9 +119,6 @@ const Split=()=>{
      // Upload completed successfully
      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
        console.log('File available at:', downloadURL);
-       setDownloadUrl(downloadURL); 
-console.log('downloadURL', setDownloadUrl);
-
      });
    }
   );
@@ -132,14 +127,11 @@ console.log('downloadURL', setDownloadUrl);
    
   const downloadURL = await getDownloadURL(storageRef);  // Use the original storageRef directly
   console.log('reodering download URL:', downloadURL);
-  setDownloadUrl(downloadURL); 
-console.log('downloadURL', setDownloadUrl);
-
   
-//   uploadedUrls.push(downloadURL);
-//                 console.log(`File ${i} available at:`, downloadURL);
+  uploadedUrls.push(downloadURL);
+                console.log(`File ${i} available at:`, downloadURL);
 
-// setreorderedfileurls(uploadedUrls);
+setreorderedfileurls(uploadedUrls);
         }
         }
         catch(error){
@@ -147,21 +139,6 @@ console.log('downloadURL', setDownloadUrl);
         }
 
     }
-    const handleDownload = () => {
-      console.log("calling the handle download");
-      if (downloadUrl) {
-        const link = document.createElement('a');
-        console.log("calling link");
-        link.href = downloadUrl;
-        link.setAttribute('download', 'annotated.pdf');
-        document.body.appendChild(link);
-        link.click();
-        console.log("calling append child");
-  
-        document.body.removeChild(link);
-    }
-    };
-     
 
     return (
         <div>
