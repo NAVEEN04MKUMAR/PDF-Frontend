@@ -140,10 +140,7 @@ uploadTask.on('state_changed',
  // Upload completed successfully, now get the download URL
  getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
   console.log('File available at:', downloadURL);
-  setDownloadUrl(downloadURL); 
-  console.log('downloadURL', setDownloadUrl);
-
-   // Set the URL in state
+  setDownloadUrl(downloadURL);  // Set the URL in state
 });
  }
 );
@@ -167,16 +164,12 @@ uploadTask.on('state_changed',
       
   }
   const handleDownload = () => {
-    console.log("calling the handle download");
     if (downloadUrl) {
       const link = document.createElement('a');
-      console.log("calling link");
       link.href = downloadUrl;
       link.setAttribute('download', 'annotated.pdf');
       document.body.appendChild(link);
       link.click();
-      console.log("calling append child");
-
       document.body.removeChild(link);
   }
   };
@@ -206,8 +199,7 @@ uploadTask.on('state_changed',
 {downloadUrl && (
                 <div>
                     <p>File is ready to download:</p>
-                    {console.log("Download URL:", downloadUrl)} 
-                    <button onClick={()=>{ console.log("Download button clicked");handleDownload}}>Download Annotated PDF</button>
+                    <button onClick={handleDownload}>Download Annotated PDF</button>
                     <a href={downloadUrl} download="redacted.pdf">Download Annotated pdf</a>
 
                 </div>

@@ -141,7 +141,7 @@ uploadTask.on('state_changed',
  getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
   console.log('File available at:', downloadURL);
   setDownloadUrl(downloadURL); 
-  console.log('downloadURL', setDownloadUrl);
+  console.log('downloadURL', downloadURL);
 
    // Set the URL in state
 });
