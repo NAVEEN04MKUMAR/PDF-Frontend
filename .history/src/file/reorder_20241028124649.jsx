@@ -134,7 +134,7 @@ const Reorder=()=>{
   const downloadURL = await getDownloadURL(storageRef);  // Use the original storageRef directly
   console.log('reodering download URL:', downloadURL);
   setDownloadUrl(downloadURL); 
-  console.log('downloadURL', setDownloadUrl);
+  
   
   
   
@@ -144,24 +144,6 @@ const Reorder=()=>{
 
     }
     }
-
-    const handleDownload = () => {
-      console.log("calling the handle download");
-      if (downloadUrl) {
-        const link = document.createElement('a');
-        console.log("calling link");
-        link.href = downloadUrl;
-        link.setAttribute('download', 'annotated.pdf');
-        document.body.appendChild(link);
-        link.click();
-        console.log("calling append child");
-  
-        document.body.removeChild(link);
-    }
-    };
-     
-  
-  
     return (
         <div>
         <h1>Reorderpdf</h1>
@@ -182,8 +164,7 @@ const Reorder=()=>{
      {downloadUrl && (
                 <div>
                     <p>File is ready to download:</p>
-                    {console.log("Download URL:", downloadUrl)} 
-                    <button onClick={()=>{ console.log("Download button clicked");handleDownload}}>Download Annotated PDF</button>
+                    <button onClick={handleDownload}>Download Annotated PDF</button>
                     <a href={downloadUrl} download="merged.pdf">Download Annotated pdf</a>
 
                 </div>
